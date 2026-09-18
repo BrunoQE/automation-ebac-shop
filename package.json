@@ -1,0 +1,23 @@
+{
+  "name": "automation-ebac-shop",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "ui-test": "npx playwright test --ui",
+    "no-headed-test": "npx playwright test",
+    "headed-test": "npx playwright test --headed",
+    "test:bdd": "bddgen && playwright test --ui"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.3",
+    "playwright-bdd": "^9.2.1"
+  },
+  "dependencies": {
+    "@faker-js/faker": "^10.6.0"
+  }
+}
