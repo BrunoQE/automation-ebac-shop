@@ -16,6 +16,7 @@ export class CarrinhoPage {
 
         this.preco = page.locator('.product-price:has(span)')
         this.quantidade = page.locator("input[type='number']")
+        this.botaoAtualizarCarrinho = page.locator('input[type="submit"][name="update_cart"]')
         this.total = page.locator(".product-subtotal:has(span)")
         this.subtotal = page.locator("[data-title='Subtotal']:has(span)")
         this.totalCarrinho = page.locator('tr.order-total td[data-title="Total"]')
@@ -39,7 +40,7 @@ export class CarrinhoPage {
         const totalAnterior = await this.total.innerText()
 
         await this.quantidade.fill(String(quantidadeAnterior + 1))
-        await this.quantidade.press('Tab')
+        await this.botaoAtualizarCarrinho.click()
 
         await expect(this.quantidade, 'A quantidade do produto deve aumentar em uma unidade').toHaveValue(String(quantidadeAnterior + 1))
         await expect(this.total, 'O subtotal deve atualizar após mudar a quantidade').not.toHaveText(totalAnterior, { timeout: 20_000 })
