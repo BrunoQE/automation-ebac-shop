@@ -15,7 +15,8 @@ export class ComprarPage {
         this.tamanho = page.locator(`ul[aria-label=Size] li`).first()
         this.cor = page.locator('ul[aria-label=Color] li').first()
         this.estoque = page.locator('p.stock')
-        this.proximoProduto = page.locator('div.right a:not(.img-link)')
+        this.proximoProdutoDireita = page.locator('div.right a:not(.img-link)')
+        this.proximoProdutoEsquerda = page.locator('div.left a:not(.img-link)')
         this.nomeProduto = page.locator('div.information h1')
         this.botaoCompraro = page.getByRole('button', { name: 'Comprar' })
         this.quantidade = page.locator("input[type='number']")
@@ -41,8 +42,16 @@ export class ComprarPage {
         const estoque = await this.estoque.innerText()
 
         if (estoque === 'Fora de estoque') {
-            await this.page.locator('div.right').hover()
-            await this.proximoProduto.click()
+            if (await this.proximoProdutoDireita.count() > 0) {
+                await this.page.locator('div.right').hover()
+                await this.proximoProdutoDireita.click()
+            } else if (await this.proximoProdutoEsquerda.count() > 0) {
+                await this.page.locator('div.left').hover()
+                await this.proximoProdutoEsquerda.click()
+            } else {
+                throw new Error('Não há produto anterior nem próximo para tentar')
+            }
+            
             return this.adicionarProdutoAoCarrinho(tentativas + 1)
         }
 
