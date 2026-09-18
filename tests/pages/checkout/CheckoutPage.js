@@ -17,12 +17,14 @@ export class CheckoutPage {
         this.sobreNome = page.getByRole('textbox', { name: /Sobrenome/ })
 
         this.comboPais = page.getByRole('combobox', { name: /País/ })
+        this.pais = page.locator('#billing_country')
         this.opcaoBrasil = page.locator('.select2-container--open .select2-results__option').filter({ hasText: /^Brasil$/ })
 
         this.endereco = page.locator('#billing_address_1')
         this.estado = page.getByRole('textbox', { name: /Cidade/ })
 
         this.comboEstado = page.getByRole('combobox', { name: /Estado/ })
+        this.uf = page.locator('#billing_state')
         this.opcaoSp = page.locator('.select2-container--open .select2-results__option').filter({ hasText: /^São Paulo$/ })
 
         this.cep = page.getByRole('textbox', { name: /CEP/ })
@@ -56,14 +58,20 @@ export class CheckoutPage {
 
         await this.nome.fill(randomNome)
         await this.sobreNome.fill(randomSobreNome)
-        await this.comboPais.click()
-        await this.opcaoBrasil.click()
+        if (await this.pais.inputValue() !== 'BR') {
+            await this.comboPais.click()
+            await this.opcaoBrasil.click()
+        }
+        await expect(this.pais, 'O país de cobrança deve ser Brasil').toHaveValue('BR')
 
         await this.endereco.fill(randomEndereco)
         await this.estado.fill(randomEstado)
 
-        await this.comboEstado.click()
-        await this.opcaoSp.click()
+        if (await this.uf.inputValue() !== 'SP') {
+            await this.comboEstado.click()
+            await this.opcaoSp.click()
+        }
+        await expect(this.uf, 'O estado de cobrança deve ser São Paulo').toHaveValue('SP')
 
         await this.cep.fill(randomCep)
         await this.telefone.fill(randomTelefone)
