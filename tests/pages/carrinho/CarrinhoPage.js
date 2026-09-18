@@ -36,9 +36,13 @@ export class CarrinhoPage {
     }
     
     async alterarQuantidade() {
+        const quantidadeAnterior = Number(await this.quantidade.inputValue())
         const totalAnterior = await this.total.innerText()
+
         await this.aumentar.click()
-        await expect(this.total).not.toHaveText(totalAnterior)
+
+        await expect(this.quantidade, 'O botão + deve aumentar a quantidade em uma unidade').toHaveValue(String(quantidadeAnterior + 1))
+        await expect(this.total, 'O subtotal deve atualizar após mudar a quantidade').not.toHaveText(totalAnterior, { timeout: 20_000 })
     }
 
     async concluirCompra() {
