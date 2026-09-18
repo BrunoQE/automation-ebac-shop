@@ -32,16 +32,19 @@ export class Header {
     }
 
     async validarQuantidadeETotal() {
-        const textoCart = await this.cart.innerText()
-        const textoValor = textoCart.match(/R\$\s*[\d.,]+/)?.[0]
-
-        const quantidade = Number(await this.quantidadeItensCarrinho.innerText())
         const valorEsperado = this.valueData.totalCarrinho || parseMoeda(this.valueData.preco)
 
-        const valorNoHeader = parseMoeda(textoValor)
+        await expect.poll(async () => {
+            const textoCart = await this.cart.innerText()
+            const textoValor = textoCart.match(/R\$\s*[\d.,]+/)?.[0]
+            return textoValor ? parseMoeda(textoValor) : NaN
+        }, {
+            message: 'O valor no header deve refletir o valor validado no carrinho',
+            timeout: 20_000
+        }).toBe(valorEsperado)
 
-        expect(valorNoHeader, 'O valor no header deve refletir o valor validado no carrinho').toBe(valorEsperado)
-        expect(quantidade, 'A quantidade no header deve refletir a quantidade do carrinho').toBe(Number(this.valueData.quantidade))
+        await expect(this.quantidadeItensCarrinho, 'A quantidade no header deve refletir a quantidade do carrinho')
+            .toHaveText(String(this.valueData.quantidade), { timeout: 20_000 })
     }
 
     async validarQuantidadeETotalZerou() {
